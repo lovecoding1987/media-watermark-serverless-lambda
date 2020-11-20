@@ -2,6 +2,7 @@ const childProcess = require('child_process');
 
 const spawnProcessPromise = function (command, args, cwd) {
   return new Promise((resolve, reject) => {
+    console.log('CWD: ', cwd);
     console.log('execute: ', command, args.join(' '));
 
     const cp = childProcess.spawn(command, args, {env: process.env, cwd: cwd || process.cwd(), shell: process.platform == 'win32'});

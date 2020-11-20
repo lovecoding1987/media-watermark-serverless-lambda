@@ -1,4 +1,4 @@
-service: pic-to-video
+service: media-watermark
 
 provider:
   name: aws
