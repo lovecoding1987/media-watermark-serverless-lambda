@@ -29,10 +29,10 @@ module.exports.process = async event => {
 
     const drawContent = [
       "drawbox=x=0:y=0:w=in_w:h=in_h/10:color=white@0.1:t=fill",
-      `drawtext=text='${name}':x=10:y=10:fontcolor=white:fontsize=${fontsize}`,
-      `drawtext=text='Uploaded\\:${time}':x=(main_w-text_w-10):y=10:fontcolor=white:fontsize=${fontsize}`,
-      `drawtext=text='DOB\\:${dob}':x=10:y=(15+text_h):fontcolor=white:fontsize=${fontsize}`,
-      `drawtext=text='IP\\:${IP}':x=(main_w-text_w-10):y=(15+text_h):fontcolor=white:fontsize=${fontsize}`
+      `drawtext=text='${name}':x=10:y=10:fontfile=/opt/ffmpeg/FreeSerif.ttf:fontcolor=white:fontsize=${fontsize}`,
+      `drawtext=text='Uploaded\\:${time}':x=(main_w-text_w-10):y=10:fontfile=/opt/ffmpeg/FreeSerif.ttf:fontcolor=white:fontsize=${fontsize}`,
+      `drawtext=text='DOB\\:${dob}':x=10:y=(15+text_h):fontfile=/opt/ffmpeg/FreeSerif.ttf:fontcolor=white:fontsize=${fontsize}`,
+      `drawtext=text='IP\\:${IP}':x=(main_w-text_w-10):y=(15+text_h):fontfile=/opt/ffmpeg/FreeSerif.ttf:fontcolor=white:fontsize=${fontsize}`
     ];
 
     const outputFilename = `${path.parse(media.fileName).name}_m${path.parse(media.fileName).ext}`
