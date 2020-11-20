@@ -26,6 +26,8 @@ package:
   exclude:
     - "./tmp/**/*"
     - "./ffmpegLayer.zip"
+    - "./input.avi"
+    - "./input.jpg"
 
 layers:
   ffmpeg:
