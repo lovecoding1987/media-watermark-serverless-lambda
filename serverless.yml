@@ -1,0 +1,36 @@
+service: pic-to-video
+
+provider:
+  name: aws
+  stage: dev
+  region: eu-west-1
+  runtime: nodejs12.x
+  memorySize: 2048
+  timeout: 30
+  apiGateway:
+    binaryMediaTypes:
+      - '*/*'
+
+functions:
+  process:
+    handler: handler.process
+    layers:
+      - {Ref: FfmpegLambdaLayer}
+    events:
+      - http:
+          method: POST
+          path: /process
+          cors: true
+
+package:
+  exclude:
+    - "./tmp/**/*"
+    - "./ffmpegLayer.zip"
+
+layers:
+  ffmpeg:
+    package:
+      artifact: ffmpegLayer.zip
+
+plugins:
+  - serverless-offline

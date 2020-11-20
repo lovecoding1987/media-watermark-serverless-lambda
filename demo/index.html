@@ -1,0 +1,103 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>WebcamJS Test Page</title>
+    <style type="text/css">
+        #my_result {
+            margin: 20px;
+            display: none;
+        }
+        #btn {
+            display: block;
+            margin: 20px;
+        }
+        #my_info {
+            margin: 20px;
+        }
+        #my_link {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div id="my_camera"></div>
+<input id="btn" type=button value="Record" onClick="take_snapshot()">
+<p id="my_info">Hello</p>
+<video id="my_result" autoplay controls ></video>
+<a href="#" id="my_link" download="">Download</a>
+
+<!-- First, include the Webcam.js JavaScript Library -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js"></script>
+
+<!-- Configure a few settings and attach camera -->
+<script language="JavaScript">
+  Webcam.set({
+    width: 360,
+    height: 240,
+    image_format: 'jpeg',
+    jpeg_quality: 40
+  });
+  Webcam.attach( '#my_camera' );
+</script>
+
+<!-- Code to handle taking the snapshot and displaying it locally -->
+<script language="JavaScript">
+  function DataURIToBlob(dataURI) {
+    const splitDataURI = dataURI.split(',')
+    const byteString = splitDataURI[0].indexOf('base64') >= 0 ? atob(splitDataURI[1]) : decodeURI(splitDataURI[1])
+    const mimeString = splitDataURI[0].split(':')[1].split(';')[0]
+
+    const ia = new Uint8Array(byteString.length)
+    for (let i = 0; i < byteString.length; i++)
+      ia[i] = byteString.charCodeAt(i)
+
+    return new Blob([ia], { type: mimeString })
+  }
+  const myResult = document.querySelector('#my_result');
+  const myInfo = document.querySelector('#my_info');
+  const myBtn = document.querySelector('#btn');
+  const myLink = document.querySelector('#my_link');
+
+  function take_snapshot() {
+    const formData = new FormData();
+    myInfo.innerText = 'Recording';
+    myBtn.style.display = 'none';
+    myResult.style.display = 'none';
+    myLink.style.display = 'none';
+
+    for (let i = 1; i <= 50; i++) {
+      setTimeout(() => {
+        Webcam.snap((uri) => {
+          const file = DataURIToBlob(uri);
+          formData.append('', file);
+          myInfo.innerText = 'Recording ' + i;
+          if (i === 50) {
+            myInfo.innerText = 'Send & Processing...';
+            fetch("https://bgidb9vcvc.execute-api.eu-west-1.amazonaws.com/dev/process", {
+              method: "POST",
+              body: formData,
+            }).then((res) => {
+              return res.blob();
+            }).then(blob => {
+              const url = URL.createObjectURL(blob);
+              myResult.style.display = 'block';
+              myResult.src = url;
+              myInfo.innerText = 'Done!';
+              myBtn.style.display = 'block';
+              myLink.href=url;
+              myLink.style.display = 'block';
+            }).catch((err) => {
+              myInfo.innerText = 'Something bad happened! Please reload';
+            })
+          }
+        })
+      }, i*100)
+    }
+  }
+</script>
+
+</body>
+</html>
